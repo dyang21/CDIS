@@ -1,0 +1,11 @@
+FROM python:3.10.6-slim-buster
+
+WORKDIR /app
+
+ADD . /app
+
+RUN pip install --no-cache-dir kafka-python pandas
+
+EXPOSE 80
+
+CMD ["python", "./data-processor.py"]

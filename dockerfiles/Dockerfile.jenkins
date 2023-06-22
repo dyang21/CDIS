@@ -1,0 +1,17 @@
+FROM jenkins/jenkins
+
+USER root
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y python3 python3-pip python3-venv && \
+    curl -fsSL https://get.docker.com -o get-docker.sh && \
+    sh get-docker.sh
+
+RUN usermod -aG docker jenkins
+
+RUN curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+RUN chmod +x ./kubectl
+RUN mv ./kubectl /usr/local/bin/kubectl
+
+USER jenkins

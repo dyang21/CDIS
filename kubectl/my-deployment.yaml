@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flaskapp
+  name: my-app
 spec:
   selector:
     matchLabels:
-      app: flaskapp
+      app: my-app
   replicas: 3
   template:
     metadata:
@@ -13,7 +13,12 @@ spec:
         app: my-app
     spec:
       containers:
+<<<<<<< HEAD
       - name: my-app
         image: my-app:1.0.0
+=======
+      - name: flaskapp
+        image: dyang32/flask-app:latest  
+>>>>>>> 9ea9be3 (fixed port ip for node port)
         ports:
         - containerPort: 8080

@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: flaskapp
 spec:
   selector:
     matchLabels:
-      app: my-app
+      app: flaskapp
   replicas: 3
   template:
     metadata:

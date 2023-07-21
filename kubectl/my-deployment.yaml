@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: my-app
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: my-app
-  replicas: 3
   template:
     metadata:
       labels:
@@ -30,3 +30,10 @@ spec:
 >>>>>>> a7d4cde (fixed minor naming image in deployment)
         ports:
         - containerPort: 50000
+        volumeMounts:
+        - name: sqlite-storage
+          mountPath: /app
+      volumes:
+      - name: sqlite-storage
+        persistentVolumeClaim:
+          claimName: sqlite-pv-claim

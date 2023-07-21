@@ -32,7 +32,7 @@ spec:
         - containerPort: 50000
         volumeMounts:
         - name: sqlite-storage
-          mountPath: /app
+          mountPath: "/var/jenkins_home/"
       volumes:
       - name: sqlite-storage
         persistentVolumeClaim:

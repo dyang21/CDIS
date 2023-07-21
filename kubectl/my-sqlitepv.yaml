@@ -12,15 +12,3 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/var/jenkins_home/"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: sqlite-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi

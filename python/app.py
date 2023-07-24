@@ -7,7 +7,7 @@ import pandas as pd
 app = Flask(__name__)
 
 def get_data():
-    conn = sqlite3.connect('sensor_data.db')
+    conn = sqlite3.connect('/var/jenkins_home/sensor_data.db')
     query = "SELECT * FROM sensor_data"
     df = pd.read_sql_query(query, conn)
     conn.close()

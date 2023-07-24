@@ -4,9 +4,12 @@ import plotly
 import plotly.graph_objs as go
 import pandas as pd
 
+import os
+
 app = Flask(__name__)
 
 def get_data():
+    os.system('ls -l')
     conn = sqlite3.connect('/var/jenkins_home/sensor_data.db')
     query = "SELECT * FROM sensor_data"
     df = pd.read_sql_query(query, conn)

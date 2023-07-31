@@ -12,7 +12,7 @@ c.execute('''CREATE TABLE IF NOT EXISTS sensor_data
 
 consumer = KafkaConsumer(
     'sensor-data',
-     bootstrap_servers='localhost:9092',
+     bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
      value_deserializer=lambda m: json.loads(m.decode('utf-8')))
 
 for message in consumer:

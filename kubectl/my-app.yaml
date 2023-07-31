@@ -31,9 +31,9 @@ spec:
         ports:
         - containerPort: 50000
         volumeMounts:
-        - name: sqlite-storage
-          mountPath: "/var/jenkins_home/"
+        - name: sensor-data-storage
+          mountPath: "/my-pv"
       volumes:
-      - name: sqlite-storage
+      - name: sensor-data-storage
         persistentVolumeClaim:
-          claimName: sqlite-pv-claim
+          claimName: sensor-data-pvc

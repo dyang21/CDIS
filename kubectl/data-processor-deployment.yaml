@@ -13,6 +13,13 @@ spec:
         app: data-processor
     spec:
       containers:
-      - name: data-processor
-        image: dyang32/data-processor:latest
+        - name: data-processor
+          image: dyang32/data-processor:latest
+          volumeMounts:
+          - name: sensor-data-storage
+            mountPath: "/my-pvc"
+      volumes:
+        - name: sensor-data-storage
+          persistentVolumeClaim:
+            claimName: sensor-data-pvc
 

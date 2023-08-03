@@ -16,15 +16,19 @@ def generate_sensor_data():
 """
 
 """
+def produce_data(producer):
+    data = generate_sensor_data()
+    producer.send('sensor-data', value=data)
+    print(f"Produced: {data}")
+    return data 
+
 def main():
     producer = KafkaProducer(
         bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
         value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
     while True:
-        data = generate_sensor_data()
-        producer.send('sensor-data', value=data)
-        print(f"Produced: {data}")
+        produce_data(producer)
         time.sleep(1) 
 
 if __name__ == "__main__":

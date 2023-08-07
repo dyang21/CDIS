@@ -2,3 +2,4 @@ pytest
 pandas
 plotly
 flask
+kafka-python

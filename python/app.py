@@ -1,15 +1,22 @@
 from flask import Flask, render_template
-import sqlite3
+from sqlite3 import connect
+from pandas import read_sql_query
 import plotly
 import plotly.graph_objs as go
-import pandas as pd
+import os
 
 app = Flask(__name__)
 
+db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
+
 def get_data():
+<<<<<<< HEAD
     conn = sqlite3.connect('sensor_data.db')
+=======
+    conn = connect(db_path)
+>>>>>>> 9639a73 (Added pytest for processor and generator)
     query = "SELECT * FROM sensor_data"
-    df = pd.read_sql_query(query, conn)
+    df = read_sql_query(query, conn)
     conn.close()
     return df
 

@@ -5,7 +5,7 @@ import data_processor
 def test_consume_data():
     consumer_mock = MagicMock()
     message_mock = MagicMock()
-    message_mock.value = {"temperature": 24.5, "humidity": 35.0, "timestamp": 1626000000.0}
+    message_mock.value = {"temperature": 24.5, "humidity": 35.0, "timestamp": 10000000.0}
     consumer_mock.__iter__.side_effect = lambda: iter([message_mock]) 
 
     mock_conn_instance = MagicMock(spec=sqlite3.Connection)  
@@ -17,6 +17,6 @@ def test_consume_data():
 
         mock_c.execute.assert_called_once_with(
             "INSERT INTO sensor_data VALUES (?, ?, ?)",
-            (24.5, 35.0, 1626000000.0)
+            (24.5, 35.0, 10000000.0)
         )
         mock_conn_instance.commit.assert_called_once()  

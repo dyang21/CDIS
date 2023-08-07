@@ -41,23 +41,18 @@ def consume_data(consumer, c, conn):
     for message in consumer:
         data = message.value
         print(f"Consumed: {data}")
-
         c.execute("INSERT INTO sensor_data VALUES (?, ?, ?)",
                   (data["temperature"], data["humidity"], data["timestamp"]))
-        print("About to commit...")  # Add this line
-
+        print("About to commit...")
         conn.commit()
 
 def main():
     conn, c = create_table()
-
     consumer = KafkaConsumer(
         'sensor-data',
          bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
          value_deserializer=lambda m: json.loads(m.decode('utf-8')))
-
     consume_data(consumer, c, conn)
-
     conn.close()
 
 if __name__ == "__main__":

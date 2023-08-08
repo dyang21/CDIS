@@ -1,4 +1,6 @@
 from kafka import KafkaProducer
+from kafka.errors import KafkaError
+from json import JSONEncodeError
 import time
 import json
 import random
@@ -18,13 +20,26 @@ def produce_data(producer):
     return data
 
 def main():
-    producer = KafkaProducer(
-        bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
-        value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    try:
+        producer = KafkaProducer(
+            bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    except KafkaError as e:
+        print(f"Kafka connection error: {str(e)}")
+        return
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return
 
     while True:
-        produce_data(producer)
+        try:
+            produce_data(producer)
+        except json.JSONEncodeError as e:
+            print(f"JSON serialization error: {str(e)}")
+        except Exception as e:
+            print(f"Unexpected error while producing data: {str(e)}")
         time.sleep(1)
+
 
 if __name__ == "__main__":
     main()

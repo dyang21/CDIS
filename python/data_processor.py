@@ -1,4 +1,5 @@
 from kafka import KafkaConsumer
+from kafka.errors import KafkaError
 import sqlite3
 import json
 
@@ -47,12 +48,22 @@ def consume_data(consumer, c, conn):
         conn.commit()
 
 def main():
-    conn, c = create_table()
-    consumer = KafkaConsumer(
-        'sensor-data',
-         bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
-         value_deserializer=lambda m: json.loads(m.decode('utf-8')))
-    consume_data(consumer, c, conn)
+    try:
+        consumer = KafkaConsumer(
+            'sensor-data',
+            bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
+            value_deserializer=lambda m: json.loads(m.decode('utf-8')))
+    except KafkaError as e:
+        print(f"Kafka connection error: {str(e)}")
+        return
+    try:
+        conn, c = create_table()
+        consume_data(consumer, c, conn)
+    except sqlite3.Error as e:
+        print(f"Database error: {str(e)}")
+    except Exception as e:
+        print(f"Unexpected error while consuming data: {str(e)}")
+
     conn.close()
 
 if __name__ == "__main__":

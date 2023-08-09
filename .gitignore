@@ -1,4 +1,9 @@
 test_app.py
+<<<<<<< HEAD
+=======
+kubeconfig
+.pytest_cache
+>>>>>>> a4f24be (Organized file^folder structure. Added ci-cd jenkins script for reference)
 # Byte-compiled / optimized / DLL files
 *.py[cod]
 **/__pycache__

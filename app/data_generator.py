@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
-from json import JSONEncodeError
+from json import JSONDecodeError
 import time
 import json
 import random
@@ -34,7 +34,7 @@ def main():
     while True:
         try:
             produce_data(producer)
-        except json.JSONEncodeError as e:
+        except json.JSONDecodeError as e:
             print(f"JSON serialization error: {str(e)}")
         except Exception as e:
             print(f"Unexpected error while producing data: {str(e)}")

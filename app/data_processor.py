@@ -30,6 +30,16 @@ for message in consumer:
 db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
 
 def create_table():
+    """
+    Create a new table named 'sensor_data' in an SQLite database if it doesn't exist already.
+    
+    Args:
+        None
+        
+    Returns:
+        conn (sqlite3.Connection): A connection object to the SQLite database.
+        c (sqlite3.Cursor): A cursor object to execute SQL commands on the database.
+    """
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS sensor_data
@@ -39,15 +49,49 @@ def create_table():
     return conn, c
 
 def consume_data(consumer, c, conn):
+    """
+    Consume data from a Kafka consumer and store it in a SQLite database.
+
+    This function iterates through messages received by the Kafka consumer, extracts data from each message,
+    inserts the data into a SQLite database table named 'sensor_data', and commits the transaction.
+
+    Args:
+        consumer (KafkaConsumer): The KafkaConsumer object.
+        c (sqlite3.Cursor): The SQLite cursor for executing database queries.
+        conn (sqlite3.Connection): The SQLite database connection.
+
+    Returns:
+        None
+    """
     for message in consumer:
         data = message.value
         print(f"Consumed: {data}")
         c.execute("INSERT INTO sensor_data VALUES (?, ?, ?)",
                   (data["temperature"], data["humidity"], data["timestamp"]))
-        print("About to commit...")
         conn.commit()
 
 def main():
+    """
+    Main function to initialize and handle Kafka consumer.
+
+    This function does the following:
+    1. Initializes a Kafka consumer connection to the specified bootstrap server.
+    2. Calls the 'create_table' function to set up the SQLite database and obtain a cursor.
+    3. Invokes the 'consume_data' function to start processing Kafka messages and storing them in the database.
+    4. Handles specific exceptions like KafkaError and sqlite3.Error, as well as general exceptions.
+    5. Closes the database connection after processing is complete.
+
+    Args:
+        None
+
+    Returns:
+        None
+
+    Raises:
+        KafkaError: If there is an issue connecting to the Kafka server.
+        sqlite3.Error: If there is an error in SQLite database operations.
+        Exception: For any other unexpected errors.
+    """    
     try:
         consumer = KafkaConsumer(
             'sensor-data',

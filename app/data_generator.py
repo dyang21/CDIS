@@ -13,7 +13,7 @@ def generate_sensor_data():
     including temperature, humidity, and a timestamp.
 
     Returns:
-        dict: It contains the following keys:
+        data (dict): It contains the following keys:
             - "temperature": A random float ranging from 20 to 25.
             - "humidity": A random float ranging from 30 to 40.
             - "timestamp": A float representing the current time.
@@ -36,7 +36,7 @@ def produce_data(producer):
     Parameters:
         producer (KafkaProducer): The KafkaProducer object for sending data.
     Returns:
-        dict: The generated sensor data.
+        data (dict): The generated sensor data.
     """
     data = generate_sensor_data()
     producer.send('sensor-data', value=data)

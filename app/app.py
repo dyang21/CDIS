@@ -13,6 +13,7 @@ db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
 def get_data():
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     conn = sqlite3.connect('sensor_data.db')
 =======
     conn = connect(db_path)
@@ -21,6 +22,22 @@ def get_data():
     df = read_sql_query(query, conn)
     conn.close()
 =======
+=======
+    """
+    Fetch sensor dataframe from the SQLite database.
+
+    This function attempts to connect to a SQLite database, and fetches all records 
+    from the `sensor_data` table. 
+
+    Returns:
+        df: A pandas dataframe containing sensor data if successful. None otherwise.
+                   
+    Raises:
+        OperationalError: Issues related to the operational aspect of the database.
+        ProgrammingError: SQL related errors, e.g., syntax errors.
+        DatabaseError: General class of errors for database-related issues.
+    """
+>>>>>>> 241748b (Finished docstrings. Fixed some indentations fro ci-cd)
     conn = None
     try:
         conn = connect(db_path)
@@ -43,6 +60,15 @@ def get_data():
 
 
 def create_plot():
+    """
+    Create a plot of sensor data.
+
+    This function fetches the sensor data using the get_data() function, 
+    and then creates a plot with temperature and humidity traces.
+
+    Returns:
+        Figure: A plotly Figure object if successful, None otherwise.
+    """
     df = get_data()
     if df is None:
         print("Unable to get data.")
@@ -58,9 +84,18 @@ def create_plot():
 
 @app.route('/')
 def index():
+    """
+    Flask route to render the main page.
+
+    This function creates a plot of sensor data and then renders the main 
+    webpage with this plot.
+
+    Returns:
+        str: String containing the html content of the webpage.
+    """
     fig = create_plot()
-    plot_div = plotly.offline.plot(fig, include_plotlyjs=False, output_type='div')
-    return render_template('index.html', plot_div=plot_div)
+    plot_div = plotly.offline.plot(fig, include_plotlyjs=False, output_type='div') #Return an HTML div which can be directly inserted into a webpage's HTML.
+    return render_template('index.html', plot_div=plot_div) 
 
 if __name__ == '__main__':
     app.run(debug = True, host='0.0.0.0', port=50000)

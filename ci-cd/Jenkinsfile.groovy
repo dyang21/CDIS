@@ -20,9 +20,9 @@ pipeline {
         stage('Build Docker images') {
             steps {
                 script {
-                    sh 'docker build -t data-generator -f Docker/Dockerfile.datagenerator python/'
-                    sh 'docker build -t flask-app -f Docker/Dockerfile.flaskapp python/'
-                    sh 'docker build -t data-processor -f Docker/Dockerfile.dataprocessor python/'
+                    sh 'docker build -t data-generator -f Docker/Dockerfile/Dockerfile.datagenerator python/'
+                    sh 'docker build -t flask-app -f Docker/Dockerfile/Dockerfile.flaskapp python/'
+                    sh 'docker build -t data-processor -f Docker/Dockerfile/Dockerfile.dataprocessor python/'
                 }
             }
         }

@@ -37,5 +37,7 @@ The system is designed to be deployed on Kubernetes using the provided Jenkins p
 
 Reference the provided pipeline script in the ci-cd directory.
 
+Note: All necessary unit tests are run as part of the Jenkins pipeline.
+
 ## Usage
 Once the system is deployed, you can access the Flask application via the exposed NodePort service (Port 50000). The application displays a graph representing the sensor data.

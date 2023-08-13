@@ -46,4 +46,4 @@ Once the system is deployed, you can access the Flask application. If you are us
 ```
 http://<minikube ip>:50000
 ```
-Replace <minikube ip> with the actual IP address obtained from running minikube ip.
+Replace <minikube ip> with the actual IP address obtained from running `minikube ip`.

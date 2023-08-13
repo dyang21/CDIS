@@ -19,7 +19,7 @@ The Continuous Data Integration System (CDIS) is a scalable platform designed to
 ## Jenkins Deployment with Docker-Compose
 1. Navigate to the Docker directory
 2. Execute the following command:
-'docker-compose up -d'
+`docker-compose up -d`
 This will set up Jenkins in a Docker container, exposing it on port 8080.
 
 ## Jenkins Pipeline Deployment

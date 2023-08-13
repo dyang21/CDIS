@@ -11,7 +11,7 @@ The Continuous Data Integration System (CDIS) is a scalable platform designed to
 
 ## Prerequisites
  + Docker and docker-compose
- + Kubernetes (Ensure you have a kubeconfig file for Jenkins to interact with your Kubernetes cluster.)
+ + Kubernetes (For this project, Minikube was used as the Kubernetes environment. Ensure you have a kubeconfig file for Jenkins to interact with your Minikube cluster.)
  + Kafka
  + SQLite
  + Helm (for Kubernetes deployment)
@@ -42,4 +42,8 @@ Reference the provided pipeline script in the ci-cd directory.
 Note: All necessary unit tests are run as part of the Jenkins pipeline.
 
 ## Usage
-Once the system is deployed, you can access the Flask application via the exposed NodePort service (Port 50000). 
+Once the system is deployed, you can access the Flask application. If you are using Minikube, access the application via:
+```
+http://<minikube ip>:50000
+```
+Replace <minikube ip> with the actual IP address obtained from running minikube ip.

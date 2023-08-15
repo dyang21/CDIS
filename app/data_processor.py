@@ -48,7 +48,7 @@ def create_table():
     conn.commit()
     return conn, c
 
-def consume_data(consumer, c, conn):
+def consume_data(consumer: KafkaConsumer, c: sqlite3.Cursor, conn: sqlite3.Connection) -> None:
     """
     Consume data from a Kafka consumer and store it in a SQLite database.
 

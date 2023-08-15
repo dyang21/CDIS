@@ -1,7 +1,8 @@
 from flask import Flask, render_template
 from sqlite3 import connect
 from sqlite3 import OperationalError, DatabaseError, ProgrammingError
-from pandas import read_sql_query
+from pandas import read_sql_query, DataFrame
+from typing import Union
 import plotly
 import plotly.graph_objs as go
 import os
@@ -10,6 +11,7 @@ app = Flask(__name__)
 
 db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
 
+<<<<<<< HEAD
 def get_data():
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -23,6 +25,9 @@ def get_data():
     conn.close()
 =======
 =======
+=======
+def get_data() -> Union[DataFrame, None]:
+>>>>>>> cc4ef0e (Added type hinting and return value.)
     """
     Fetch sensor dataframe from the SQLite database.
 

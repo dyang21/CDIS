@@ -1,11 +1,12 @@
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 from json import JSONDecodeError
+from typing import Dict
 import time
 import json
 import random
 
-def generate_sensor_data():
+def generate_sensor_data() -> Dict[str, float]:
     """
     Generates a dictionary containing sensor data.
 
@@ -25,7 +26,7 @@ def generate_sensor_data():
     }
     return data
 
-def produce_data(producer):
+def produce_data(producer) -> Dict[str, float]:
     """
     Produces sensor data and sends it to a producer.
 

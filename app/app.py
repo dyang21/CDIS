@@ -11,23 +11,13 @@ app = Flask(__name__)
 
 db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
 
-<<<<<<< HEAD
+
 def get_data():
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    conn = sqlite3.connect('sensor_data.db')
-=======
     conn = connect(db_path)
->>>>>>> 9639a73 (Added pytest for processor and generator)
     query = "SELECT * FROM sensor_data"
     df = read_sql_query(query, conn)
     conn.close()
-=======
-=======
-=======
 def get_data() -> Union[DataFrame, None]:
->>>>>>> cc4ef0e (Added type hinting and return value.)
     """
     Fetch sensor dataframe from the SQLite database.
 
@@ -42,7 +32,6 @@ def get_data() -> Union[DataFrame, None]:
         ProgrammingError: SQL related errors, e.g., syntax errors.
         DatabaseError: General class of errors for database-related issues.
     """
->>>>>>> 241748b (Finished docstrings. Fixed some indentations fro ci-cd)
     conn = None
     try:
         conn = connect(db_path)
@@ -60,7 +49,6 @@ def get_data() -> Union[DataFrame, None]:
     finally:
         if conn:
             conn.close()
->>>>>>> 362f3b6 (added specific error handling try blocks low in scope. next is to render error page)
     return df
 
 

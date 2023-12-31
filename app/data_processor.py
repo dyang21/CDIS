@@ -2,36 +2,13 @@ from kafka import KafkaConsumer
 from kafka.errors import KafkaError
 import sqlite3
 import json
+import os
 
-<<<<<<< HEAD
-
-conn = sqlite3.connect('sensor_data.db')
-c = conn.cursor()
-
-c.execute('''CREATE TABLE IF NOT EXISTS sensor_data
-             (temperature real, humidity real, timestamp real)''')
-
-
-consumer = KafkaConsumer(
-    'sensor-data',
-     bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
-     value_deserializer=lambda m: json.loads(m.decode('utf-8')))
-
-for message in consumer:
-    data = message.value
-    print(f"Consumed: {data}")
-
-
-    c.execute("INSERT INTO sensor_data VALUES (?, ?, ?)",
-              (data["temperature"], data["humidity"], data["timestamp"]))
-
-
-=======
 db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
 
 def create_table():
     """
-    Create a new table named 'sensor_data' in an SQLite database if it doesn't exist already.
+    Create tables in an SQLite database if it doesn't exist already.
     
     Args:
         None
@@ -42,9 +19,33 @@ def create_table():
     """
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS sensor_data
-                (temperature real, humidity real, timestamp real)''')
->>>>>>> 42f0e71 (clean up code)
+
+    c.execute('''CREATE TABLE IF NOT EXISTS sensor (
+                    sensor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    location TEXT,
+                    sensor_type TEXT)''')
+    
+    c.execute('''CREATE TABLE IF NOT EXISTS temperature_data (
+                    temp_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    sensor_id INTEGER,
+                    temperature REAL,
+                    timestamp REAL,
+                    FOREIGN KEY(sensor_id) REFERENCES sensor(sensor_id))''')
+    
+    c.execute('''CREATE TABLE IF NOT EXISTS humidity_data (
+                    humidity_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    sensor_id INTEGER,
+                    humidity REAL,
+                    timestamp REAL,
+                    FOREIGN KEY(sensor_id) REFERENCES sensor(sensor_id))''')
+    
+    c.execute('''CREATE TABLE IF NOT EXISTS sensor_logs(
+                    logs_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    sensor_id INTEGER,
+                    logs_date REAL,
+                    details TEXT,
+                    FOREIGN KEY(sensor_id) REFERENCES sensor(sensor_id))''')
+    
     conn.commit()
     return conn, c
 

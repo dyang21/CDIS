@@ -1,94 +1,66 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 from sqlite3 import connect
-from sqlite3 import OperationalError, DatabaseError, ProgrammingError
-from pandas import read_sql_query, DataFrame
-from typing import Union
 import plotly
 import plotly.graph_objs as go
+import pandas as pd
 import os
+import json
 
 app = Flask(__name__)
 
 db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
 
+@app.route('/query_data', methods=['POST'])
+def query_data():
+    query_type = request.json['query_type']
+    df = execute_query(query_type)
+    graph = create_plot(df, query_type)
+    return jsonify(graph=graph)
 
-def get_data():
+def execute_query(query_type):
     conn = connect(db_path)
-    query = "SELECT * FROM sensor_data"
-    df = read_sql_query(query, conn)
+    if query_type == 'Average Temp and Humidity by Location':
+        query = """SELECT s.location, AVG(t.temperature) AS avg_temp, AVG(h.humidity) AS avg_humidity
+                   FROM sensor s
+                   INNER JOIN temperature_data t ON s.sensor_id = t.sensor_id
+                   INNER JOIN humidity_data h ON s.sensor_id = h.sensor_id
+                   GROUP BY s.location"""
+    elif query_type == 'Latest Logs by Sensor':
+        query = """SELECT s.sensor_id, s.location, s.sensor_type, MAX(l.logs_date) AS last_log_date, l.details
+                   FROM sensor s
+                   INNER JOIN sensor_logs l ON s.sensor_id = l.sensor_id
+                   GROUP BY s.sensor_id"""
+    else:
+        conn.close()
+        return pd.DataFrame()
+
+    df = pd.read_sql_query(query, conn)
     conn.close()
-def get_data() -> Union[DataFrame, None]:
-    """
-    Fetch sensor dataframe from the SQLite database.
-
-    This function attempts to connect to a SQLite database, and fetches all records 
-    from the `sensor_data` table. 
-
-    Returns:
-        df: A pandas dataframe containing sensor data if successful. None otherwise.
-                   
-    Raises:
-        OperationalError: Issues related to the operational aspect of the database.
-        ProgrammingError: SQL related errors, e.g., syntax errors.
-        DatabaseError: General class of errors for database-related issues.
-    """
-    conn = None
-    try:
-        conn = connect(db_path)
-        query = "SELECT * FROM sensor_data"
-        df = read_sql_query(query, conn)
-    except OperationalError as e:
-        print(f"Operational error in database connection: {str(e)}")
-        return None
-    except ProgrammingError as e:
-        print(f"Programming error in database {str(e)}")
-        return None
-    except DatabaseError as e:
-        print(f"General database error: {str(e)}")
-        return None
-    finally:
-        if conn:
-            conn.close()
     return df
 
-
-def create_plot():
-    """
-    Create a plot of sensor data.
-
-    This function fetches the sensor data using the get_data() function, 
-    and then creates a plot with temperature and humidity traces.
-
-    Returns:
-        Figure: A plotly Figure object if successful, None otherwise.
-    """
-    df = get_data()
-    if df is None:
-        print("Unable to get data.")
-        return None
-    try:
+def create_plot(df, query_type):
+    if query_type == 'Average Temp and Humidity by Location':
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df['timestamp'], y=df['temperature'], mode='lines', name='Temperature'))
-        fig.add_trace(go.Scatter(x=df['timestamp'], y=df['humidity'], mode='lines', name='Humidity'))
-        fig.update_layout(title='Sensor Data', xaxis_title='Timestamp', yaxis_title='Value')
-    except Exception as e:
-        print(f"Plotting error: {str(e)}")
-        return None
+        fig.add_trace(go.Bar(x=df['location'], y=df['avg_temp'], name='Avg Temperature'))
+        fig.add_trace(go.Bar(x=df['location'], y=df['avg_humidity'], name='Avg Humidity'))
+        fig.update_layout(title='Average Temperature and Humidity by Location')
+    elif query_type == 'Latest Logs by Sensor':
+        fig = go.Figure(data=[go.Table(
+            header=dict(values=list(df.columns),
+                        fill_color='red',
+                        align='left'),
+            cells=dict(values=[df[k].tolist() for k in df.columns],
+                       fill_color='blue',
+                       align='left'))])
+        fig.update_layout(title='Latest Logs by Sensor')
+    else:
+        fig = go.Figure()
 
+    graph = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return graph
 @app.route('/')
 def index():
-    """
-    Flask route to render the main page.
-
-    This function creates a plot of sensor data and then renders the main 
-    webpage with this plot.
-
-    Returns:
-        str: String containing the html content of the webpage.
-    """
-    fig = create_plot()
-    plot_div = plotly.offline.plot(fig, include_plotlyjs=False, output_type='div') #Return an HTML div which can be directly inserted into a webpage's HTML.
-    return render_template('index.html', plot_div=plot_div) 
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug = True, host='0.0.0.0', port=50000)

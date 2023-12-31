@@ -3,15 +3,18 @@
 The Continuous Data Integration System (CDIS) is a scalable platform designed to simulate the generation of sensor data, process this data, and visualize it using Flask. The architecture leverages Kafka for data streaming and SQLite for data storage.
 
 ## Components and Data Flow
- + data_generator.py: Generates simulated sensor data and pushes it to a Kafka topic.
+ + data_generator.py: Generates simulated sensor data, temperature_datam humidity_data, and sesnor_logs_data  and pushes it to a Kafka topic.
  + data_processor.py: Consumes the Kafka-streamed data, processes it, and stores it in an SQLite database.
- + Flask App (app.py): Presents the stored data in a graph using Plotly.
+ + Flask App (app.py): Presents stored data in an interactive graph, updated every minute, showing average temperature and humidity alongside the latest logs by sensors, using Plotly for visualization.
 
  The data flow starts with the Data Generator, proceeds to the Data Processor, and finally gets visualized in the Flask app.
 
+ ## Tables
+ <img src="photo/diagram.png" alt="Tables" width="300"/>
+
 ## Prerequisites
  + Docker and docker-compose
- + Kubernetes (For this project, Minikube was used as the Kubernetes environment. Ensure you have a kubeconfig file for Jenkins to interact with your Minikube cluster.)
+ + Kubernetes (For this project, Minikube was used as the Kubernetes environment.)
  + Kafka
  + SQLite
  + Helm (for Kubernetes deployment)

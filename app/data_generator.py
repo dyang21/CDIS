@@ -6,27 +6,49 @@ import time
 import json
 import random
 
-def generate_sensor_data() -> Dict[str, float]:
-    """
-    Generates a dictionary containing sensor data.
+locations = []
 
-    This function simulates the collection of data from a sensor, 
-    including temperature, humidity, and a timestamp.
+def generate_sensor() -> tuple[Dict[str, float], Dict[str, float], Dict[str, float]]:
 
-    Returns:
-        data (dict): It contains the following keys:
-            - "temperature": A random float ranging from 20 to 25.
-            - "humidity": A random float ranging from 30 to 40.
-            - "timestamp": A float representing the current time.
-    """
-    data = {
-        "temperature": random.uniform(20, 25),
-        "humidity": random.uniform(30, 40),
+    sensor_id = random.randint(1, 100)
+    location = random.choice(["AZ", "NY", "OH", "PA", "MT", "NH", "VA"]),
+    sensor_type = random.choice(['Temperature','Humidity'])
+
+    sensor_data = {
+        "sensor_id": sensor_id,
+        "location": location,
+        "sensor_type": sensor_type
+
+    }
+
+
+    temperature_data = {
+        "sensor_id": sensor_id,
+        "temperature": random.uniform(20, 80),
         "timestamp": time.time()
     }
-    return data
 
-def produce_data(producer) -> Dict[str, float]:
+    humidity_data = {
+        "sensor_id": sensor_id,
+        "humidity": random.uniform(20,80),
+        "timestamp": time.time()
+    }
+
+    sensor_logs_data = {
+        "sensor_id": sensor_id,
+        "logs_date": time.time(),
+        "details": random.choice(['Maintenance', 'Replacement', 'Inspection'])
+    }
+
+
+
+    return sensor_data, temperature_data, humidity_data, sensor_logs_data
+
+
+
+
+
+def produce_data(producer) -> tuple[Dict[str, float], Dict[str, float], Dict[str, float]]:
     """
     Produces sensor data and sends it to a producer.
 
@@ -39,10 +61,17 @@ def produce_data(producer) -> Dict[str, float]:
     Returns:
         data (dict): The generated sensor data.
     """
-    data = generate_sensor_data()
-    producer.send('sensor-data', value=data)
-    print(f"Produced: {data}")
-    return data #Returns for testing purposes.
+    sensor_data, temperature_data, humidity_data, sensor_logs_data = generate_sensor()
+
+    producer.send('sensor-data', value=sensor_data)
+    producer.send('temperature-data', value=temperature_data)
+    producer.send('humidity-data', value=humidity_data)
+    producer.send('sensor_logs_data', value=sensor_logs_data)
+
+    print(f"Produced: {sensor_data}, {temperature_data}, {humidity_data}, {sensor_logs_data}")
+
+    return sensor_data, temperature_data, humidity_data, sensor_logs_data #Returns for testing purposes.
+
 def main():
     """
     Main function to initialize and handle Kafka producer.

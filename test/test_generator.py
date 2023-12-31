@@ -14,7 +14,6 @@ def test_produce_data():
 
     This test checks the following:
     - The KafkaProducer's send method is called once.
-    - The returned data contains 'temperature', 'humidity', and 'timestamp' fields. 
 
     Mocks:
         KafkaProducer: To prevent actual Kafka interactions and to validate 
@@ -22,8 +21,20 @@ def test_produce_data():
                     
     """
     with patch('app.data_generator.KafkaProducer', return_value=Mock(spec=KafkaProducer)) as mock_producer: #Replace the real KafkaProducer with a mock object.
-        data = data_generator.produce_data(mock_producer)
+        sensor_data, temperature_data, humidity_data, sensor_logs_data = data_generator.produce_data(mock_producer)
         mock_producer.send.assert_called_once()
-        assert 'temperature' in data
-        assert 'humidity' in data
-        assert 'timestamp' in data
+        assert 'sensor_id' in sensor_data
+        assert 'location' in sensor_data
+        assert 'sensor_type' in sensor_data
+
+        assert 'sensor_id' in temperature_data
+        assert 'temperature' in temperature_data
+        assert 'timestamp' in temperature_data
+
+        assert 'sensor_id' in humidity_data
+        assert 'humidity' in humidity_data
+        assert 'timestamp' in humidity_data
+
+        assert 'sensor_id' in sensor_logs_data
+        assert 'logs_date' in sensor_logs_data
+        assert 'details' in sensor_logs_data

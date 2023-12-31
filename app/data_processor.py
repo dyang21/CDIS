@@ -7,16 +7,6 @@ import os
 db_path = os.path.join(os.sep, 'my-pv', 'sensor_data.db')
 
 def create_table():
-    """
-    Create tables in an SQLite database if it doesn't exist already.
-    
-    Args:
-        None
-        
-    Returns:
-        conn (sqlite3.Connection): A connection object to the SQLite database.
-        c (sqlite3.Cursor): A cursor object to execute SQL commands on the database.
-    """
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
@@ -50,52 +40,38 @@ def create_table():
     return conn, c
 
 def consume_data(consumer: KafkaConsumer, c: sqlite3.Cursor, conn: sqlite3.Connection) -> None:
-    """
-    Consume data from a Kafka consumer and store it in a SQLite database.
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
 
-    This function iterates through messages received by the Kafka consumer, extracts data from each message,
-    inserts the data into a SQLite database table named 'sensor_data', and commits the transaction.
-
-    Args:
-        consumer (KafkaConsumer): The KafkaConsumer object.
-        c (sqlite3.Cursor): The SQLite cursor for executing database queries.
-        conn (sqlite3.Connection): The SQLite database connection.
-
-    Returns:
-        None
-    """
     for message in consumer:
         data = message.value
-        print(f"Consumed: {data}")
-        c.execute("INSERT INTO sensor_data VALUES (?, ?, ?)",
-                  (data["temperature"], data["humidity"], data["timestamp"]))
+
+        if message.topic == 'sensor-table':
+            c.execute("INSERT INTO sensor (sensor_id, location, sensor_type) VALUES (?, ?, ?)",
+                      (data["sensor_id"], data["location"], data["sensor_type"]))
+
+        elif message.topic == 'temperature-data-table':
+            c.execute("INSERT INTO temperature_data (temperature, timestamp, sensor_id) VALUES (?, ?, ?)",
+                      (data["temperature"], data["timestamp"], data["sensor_id"]))
+
+        elif message.topic == 'humidity-data-table':
+            c.execute("INSERT INTO humidity_data (humidity, timestamp, sensor_id) VALUES (?, ?, ?)",
+                      (data["humidity"], data["timestamp"], data["sensor_id"]))
+
+        elif message.topic == 'sensor-logs-table':
+            c.execute("INSERT INTO sensor_logs (logs_date, details, sensor_id) VALUES (?, ?, ?)",
+                      (data["logs_date"], data["details"], data["sensor_id"]))
+    
         conn.commit()
+    conn.close()
 
 def main():
-    """
-    Main function to initialize and handle Kafka consumer.
-
-    This function does the following:
-    1. Initializes a Kafka consumer connection to the specified bootstrap server.
-    2. Calls the 'create_table' function to set up the SQLite database and obtain a cursor.
-    3. Invokes the 'consume_data' function to start processing Kafka messages and storing them in the database.
-    4. Handles specific exceptions like KafkaError and sqlite3.Error, as well as general exceptions.
-    5. Closes the database connection after processing is complete.
-
-    Args:
-        None
-
-    Returns:
-        None
-
-    Raises:
-        KafkaError: If there is an issue connecting to the Kafka server.
-        sqlite3.Error: If there is an error in SQLite database operations.
-        Exception: For any other unexpected errors.
-    """    
     try:
         consumer = KafkaConsumer(
-            'sensor-data',
+            'sensor-table',
+            'temperature-data-table',
+            'humidity-data-table',
+            'sensor-logs-table',
             bootstrap_servers='my-kafka.default.svc.cluster.local:9092',
             value_deserializer=lambda m: json.loads(m.decode('utf-8')))
     except KafkaError as e:

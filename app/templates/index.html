@@ -3,9 +3,39 @@
 <head>
     <title>Sensor Data Dashboard</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <h1>Sensor Data Dashboard</h1>
-    <div>{{ plot_div|safe }}</div>
+    <button id="btn1" onclick="loadData('Average Temp and Humidity by Location')">Average Temp and Humidity by Location</button>
+    <button id="btn2" onclick="loadData('Latest Logs by Sensor')">Latest Logs by Sensor</button>
+    <div id="graph"></div>
+
+    <script type="text/javascript">
+        var currentQueryType = 'Average Temp and Humidity by Location'; 
+
+        function loadData(queryType) {
+            currentQueryType = queryType; 
+            $.ajax({
+                url: '/query_data',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({query_type: queryType}),
+                success: function(response) {
+                    Plotly.newPlot('graph', JSON.parse(response.graph));
+                }
+            });
+        }
+
+        function refreshGraph() {
+            loadData(currentQueryType);
+        }
+
+        // Calls refreshGraph function every minute
+        setInterval(refreshGraph, 60000);
+
+        loadData(currentQueryType);
+    </script>
 </body>
 </html>
+

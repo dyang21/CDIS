@@ -10,7 +10,7 @@ The Continuous Data Integration System (CDIS) is a scalable platform designed to
  The data flow starts with the Data Generator, proceeds to the Data Processor, and finally gets visualized in the Flask app.
 
  ## Tables
- <img src="photo/diagram.png" alt="Tables" width="300"/>
+ ![Demonstration](photos/Tables.png)
 
 ## Prerequisites
  + Docker and docker-compose

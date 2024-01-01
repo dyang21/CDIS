@@ -18,10 +18,7 @@ def generate_sensor() -> tuple[Dict[str, float], Dict[str, float], Dict[str, flo
         "sensor_id": sensor_id,
         "location": location,
         "sensor_type": sensor_type
-
     }
-
-
     temperature_data = {
         "sensor_id": sensor_id,
         "temperature": random.uniform(20, 80),
@@ -49,18 +46,6 @@ def generate_sensor() -> tuple[Dict[str, float], Dict[str, float], Dict[str, flo
 
 
 def produce_data(producer) -> tuple[Dict[str, float], Dict[str, float], Dict[str, float]]:
-    """
-    Produces sensor data and sends it to a producer.
-
-    This function generates sensor data using the `generate_sensor_data` function and
-    sends it to the given producer on the 'sensor-data' topic. The produced data
-    is also printed to the standard output.
-
-    Parameters:
-        producer (KafkaProducer): The KafkaProducer object for sending data.
-    Returns:
-        data (dict): The generated sensor data.
-    """
     sensor_data, temperature_data, humidity_data, sensor_logs_data = generate_sensor()
 
     producer.send('sensor-data', value=sensor_data)
@@ -73,27 +58,6 @@ def produce_data(producer) -> tuple[Dict[str, float], Dict[str, float], Dict[str
     return sensor_data, temperature_data, humidity_data, sensor_logs_data #Returns for testing purposes.
 
 def main():
-    """
-    Main function to initialize and handle Kafka producer.
-
-    This function does the following:
-    1. Initializes a Kafka producer connection to the specified bootstrap server.
-    2. Continuously calls the produce_data function to send data to Kafka.
-    3. Handles specific exceptions like KafkaError and JSONDecodeError, as well as general exceptions.
-    4. Sleeps for one second after each iteration of producing data.
-
-    Args:
-        None
-
-    Returns:
-        None
-
-    Raises:
-        KafkaError: An error in connecting to the Kafka server.
-        json.JSONDecodeError: An error in JSON serialization while producing data.
-        Exception: Any unexpected error that might occur.
-
-    """
     try:
         producer = KafkaProducer(
             bootstrap_servers='my-kafka.default.svc.cluster.local:9092', #Looks for a service named my-kafka in default namespace in port 9092.

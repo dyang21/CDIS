@@ -3,7 +3,7 @@
 The Continuous Data Integration System (CDIS) is a scalable platform engineered to automate the integration and deployment processes for simulating real-time sensor data, processing this data, and interactively presenting it through Flask.
 
 ## Diagram
- <img src="images/diagram.png" alt="Data Tables" width='900'/>
+ <img src="images/CDIS_diagram.png" alt="Data Tables" width='900'/>
 
 ## Components and Data Flow
  + data_generator.py: Generates simulated sensor data, temperature_data, humidity_data, and sensor_logs_data  and pushes it to a Kafka topic.

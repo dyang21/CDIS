@@ -6,7 +6,7 @@ The Continuous Data Integration System (CDIS) is a scalable platform designed to
  <img src="images/diagram.png" alt="Data Tables" width='600'/>
 
 ## Components and Data Flow
- + data_generator.py: Generates simulated sensor data, temperature_datam humidity_data, and sesnor_logs_data  and pushes it to a Kafka topic.
+ + data_generator.py: Generates simulated sensor data, temperature_data, humidity_data, and sensor_logs_data  and pushes it to a Kafka topic.
  + data_processor.py: Consumes the Kafka-streamed data, processes it, and stores it in an SQLite database.
  + Flask App (app.py): Presents stored data in an interactive graph, updated every minute, showing average temperature and humidity alongside the latest logs by sensors, using Plotly for visualization.
 

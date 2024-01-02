@@ -18,10 +18,12 @@ The Continuous Data Integration System (CDIS) is a scalable platform engineered 
 
 ## Prerequisites
  + Docker and docker-compose
- + Kubernetes (Minikube using the Docker Driver)
+ + Kubernetes (Minikube)
  + Kafka
  + SQLite
  + Helm (for Kubernetes deployment)
+ + Jenkins
+ + Plotly and Flask
 
 ## Jenkins Deployment with Docker-Compose
 1. Navigate to the Docker directory

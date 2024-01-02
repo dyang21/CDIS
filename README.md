@@ -21,7 +21,7 @@ The Continuous Data Integration System (CDIS) is a scalable platform engineered 
  + Kubernetes (Minikube)
  + Kafka
  + SQLite
- + Helm (for Kubernetes deployment)
+ + Helm (for Kafka and Zookeeper deployment)
  + Jenkins
  + Plotly and Flask
 

@@ -13,21 +13,10 @@ spec:
         app: my-app
     spec:
       containers:
-<<<<<<< HEAD
       - name: my-app
-        image: my-app:1.0.0
-=======
-      - name: flaskapp
-<<<<<<< HEAD
-<<<<<<< HEAD
-        image: dyang32/flask-app:latest  
->>>>>>> 9ea9be3 (fixed port ip for node port)
-=======
-        image: flask-app:latest
->>>>>>> d2c4ffc (changed host to all ports in app.y. docker.flaskapp exposed port changed and configured my deployment and node-port to match with targetting port)
-=======
+
         image: dyang32/flask-app:latest
->>>>>>> a7d4cde (fixed minor naming image in deployment)
+
         ports:
         - containerPort: 50000
         volumeMounts:
